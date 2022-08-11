@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName;
 public class Rating {
 
     @SerializedName("imdb")
-    private String imdb;
+    private double imdb;
 
-    public Rating(String imdb) {
+    public Rating(double imdb) {
         this.imdb = imdb;
     }
 
-    public String getImdb() {
+    public double getImdb() {
         return imdb;
     }
 

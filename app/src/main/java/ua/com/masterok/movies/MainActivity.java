@@ -1,33 +1,38 @@
 package ua.com.masterok.movies;
 
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.ProgressBar;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
-import android.os.Bundle;
-import android.util.Log;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.functions.Consumer;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
     private MainViewModel mainViewModel;
+    private RecyclerView recyclerViewMovies;
+    private ProgressBar progressBar;
+
+    private MoviesAdapter moviesAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
+        adapter();
         viewModel();
 
     }
 
     private void init() {
-
+        recyclerViewMovies = findViewById(R.id.recycler_view_movies);
+        progressBar = findViewById(R.id.progress_bar_loading);
     }
 
     private void viewModel() {
@@ -35,10 +40,16 @@ public class MainActivity extends AppCompatActivity {
         mainViewModel.getMovieMutableLiveData().observe(this, new Observer<List<Movie>>() {
             @Override
             public void onChanged(List<Movie> movies) {
-                Log.d("MainActivity", movies.toString());
+                moviesAdapter.setMovies(movies);
             }
         });
         mainViewModel.loadMovies();
+    }
+
+    private void adapter() {
+        moviesAdapter = new MoviesAdapter();
+        recyclerViewMovies.setAdapter(moviesAdapter);
+        recyclerViewMovies.setLayoutManager(new GridLayoutManager(this, 2));
     }
 
 }
