@@ -22,4 +22,11 @@ public class MovieResponseFromServer {
     public List<Movie> getMovies() {
         return movies;
     }
+
+    @Override
+    public String toString() {
+        return "MovieResponseFromServer{" +
+                "movies=" + movies +
+                '}';
+    }
 }
