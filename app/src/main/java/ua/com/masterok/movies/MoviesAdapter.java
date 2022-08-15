@@ -20,9 +20,14 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
     private List<Movie> movies = new ArrayList<>();
     private OnReachEndListener onReachEndListener;
+    private OnClickMovieListener onClickMovieListener;
 
     public void setOnReachEndListener(OnReachEndListener onReachEndListener) {
         this.onReachEndListener = onReachEndListener;
+    }
+
+    public void setOnClickMovieListener(OnClickMovieListener onClickMovieListener) {
+        this.onClickMovieListener = onClickMovieListener;
     }
 
     public void setMovies(List<Movie> movies) {
@@ -63,6 +68,14 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
             onReachEndListener.onReachEnd();
         }
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onClickMovieListener != null) {
+                    onClickMovieListener.onClickMovie(movie);
+                }
+            }
+        });
 
     }
 
@@ -76,7 +89,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         void onReachEnd();
     }
 
-    static class MovieViewHolder extends RecyclerView.ViewHolder{
+    interface OnClickMovieListener {
+
+        void onClickMovie(Movie movie);
+    }
+
+    static class MovieViewHolder extends RecyclerView.ViewHolder {
 
         private final ImageView ivPoster;
         private final TextView tvRating;

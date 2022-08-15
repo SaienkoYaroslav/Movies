@@ -2,8 +2,13 @@ package ua.com.masterok.movies;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 // POJO
-public class Movie {
+
+// Serializable - позначає, що ексемпляр цього класу можна перетворити в набір байтів. Потрібно,
+// щоб можна було екземпляр класу передати через інтент
+public class Movie implements Serializable {
 
     @SerializedName("id")
     private int id;

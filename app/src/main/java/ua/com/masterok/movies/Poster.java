@@ -2,8 +2,10 @@ package ua.com.masterok.movies;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 // POJO
-public class Poster {
+public class Poster implements Serializable {
 
     @SerializedName("url")
     private String url;

@@ -1,5 +1,6 @@
 package ua.com.masterok.movies;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -64,6 +65,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onReachEnd() {
                 mainViewModel.loadMovies();
+            }
+        });
+        moviesAdapter.setOnClickMovieListener(new MoviesAdapter.OnClickMovieListener() {
+            @Override
+            public void onClickMovie(Movie movie) {
+                Intent intent = new Intent(MovieDetailActivity.newIntent(getApplicationContext(), movie));
+                startActivity(intent);
             }
         });
     }
