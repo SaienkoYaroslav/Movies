@@ -2,6 +2,7 @@ package ua.com.masterok.movies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
@@ -19,8 +22,10 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private ImageView imageViewPoster;
     private TextView tvTitle, tvYear, tvDescription;
+    private RecyclerView rvTrailers;
 
     private MovieDetailViewModel movieDetailViewModel;
+    private TrailersAdapter trailersAdapter;
 
     private static final String EXTRA_MOVIE = "movie";
 
@@ -32,7 +37,25 @@ public class MovieDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_detail);
         init();
         intent();
+        adapter();
         viewModel();
+
+    }
+
+    private void adapter() {
+        trailersAdapter = new TrailersAdapter();
+        rvTrailers.setAdapter(trailersAdapter);
+        rvTrailers.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        trailersAdapter.setOnTrailerClickListener(new TrailersAdapter.OnTrailerClickListener() {
+            @Override
+            public void onTrailerClick(Trailers trailer) {
+                // неявний інтент. ACTION_VIEW - екшн для відображення адреси в інтернеті
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                // парсим строку в посилання (Url)
+                intent.setData(Uri.parse(trailer.getUrl()));
+                startActivity(intent);
+            }
+        });
     }
 
     private void viewModel() {
@@ -41,7 +64,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         movieDetailViewModel.getListTrailersMutableLiveData().observe(this, new Observer<List<Trailers>>() {
             @Override
             public void onChanged(List<Trailers> trailers) {
-                Log.d("AAA", trailers.toString());
+                trailersAdapter.setTrailers(trailers);
             }
         });
     }
@@ -63,6 +86,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         tvTitle = findViewById(R.id.text_view_title);
         tvYear = findViewById(R.id.text_view_year);
         tvDescription = findViewById(R.id.text_view_description);
+        rvTrailers = findViewById(R.id.recycler_view_trailers);
     }
 
     public static Intent newIntent(Context context, Movie movie) {
