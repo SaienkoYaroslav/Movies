@@ -11,4 +11,7 @@ public interface ApiService {
     // до ендпоінта додасться &page=int page
     Single<MovieResponseFromServer> loadMovies(@Query("page") int page);
 
+    @GET("movie?token=9J87GP5-QT147CF-J3FDMKJ-GH8132M&field=id")
+    Single<TrailerResponseFromServer> loadTrailers(@Query("search") int id);
+
 }
