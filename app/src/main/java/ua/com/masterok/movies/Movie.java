@@ -1,5 +1,9 @@
 package ua.com.masterok.movies;
 
+import androidx.room.Embedded;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -8,8 +12,10 @@ import java.io.Serializable;
 
 // Serializable - позначає, що ексемпляр цього класу можна перетворити в набір байтів. Потрібно,
 // щоб можна було екземпляр класу передати через інтент
+@Entity(tableName = "favourite_movies")
 public class Movie implements Serializable {
 
+    @PrimaryKey
     @SerializedName("id")
     private int id;
     @SerializedName("name")
@@ -18,8 +24,11 @@ public class Movie implements Serializable {
     private String description;
     @SerializedName("year")
     private int year;
+    // @Embedded - анотація дозволяє записати ці поля в БД
+    @Embedded
     @SerializedName("poster")
     private Poster poster;
+    @Embedded
     @SerializedName("rating")
     private Rating rating;
 

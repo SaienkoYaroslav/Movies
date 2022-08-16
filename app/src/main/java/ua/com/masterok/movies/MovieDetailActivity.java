@@ -2,13 +2,16 @@ package ua.com.masterok.movies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,15 +21,22 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 public class MovieDetailActivity extends AppCompatActivity {
 
-    private ImageView imageViewPoster;
+    private ImageView imageViewPoster, imageViewStar;
     private TextView tvTitle, tvYear, tvDescription;
     private RecyclerView rvTrailers, rvReviews;
 
     private MovieDetailViewModel movieDetailViewModel;
     private TrailersAdapter trailersAdapter;
     private ReviewAdapter reviewAdapter;
+
+    private Movie movie;
+
+    private Drawable starOff, starOn;
 
     private static final String EXTRA_MOVIE = "movie";
 
@@ -37,10 +47,16 @@ public class MovieDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
         init();
+        drawable();
         intent();
         adapter();
         viewModel();
 
+    }
+
+    private void drawable() {
+        starOff = ContextCompat.getDrawable(MovieDetailActivity.this, android.R.drawable.star_big_off);
+        starOn = ContextCompat.getDrawable(MovieDetailActivity.this, android.R.drawable.star_big_on);
     }
 
     private void adapter() {
@@ -80,11 +96,33 @@ public class MovieDetailActivity extends AppCompatActivity {
                 reviewAdapter.setReviews(reviews);
             }
         });
+        movieDetailViewModel.getFavouriteMovie(id).observe(this, new Observer<Movie>() {
+            @Override
+            public void onChanged(Movie movieFromDb) {
+                if (movieFromDb == null) {
+                    imageViewStar.setImageDrawable(starOff);
+                    imageViewStar.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            movieDetailViewModel.insertMovie(movie);
+                        }
+                    });
+                } else {
+                    imageViewStar.setImageDrawable(starOn);
+                    imageViewStar.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            movieDetailViewModel.removeMovie(id);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void intent() {
         // При отриманні об'єкта Серіалайзбл, потрібно виконати явне перетворення типів
-        Movie movie = (Movie) getIntent().getSerializableExtra(EXTRA_MOVIE);
+        movie = (Movie) getIntent().getSerializableExtra(EXTRA_MOVIE);
         id = movie.getId();
         Glide.with(this)
                 .load(movie.getPoster().getUrl())
@@ -101,6 +139,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         tvDescription = findViewById(R.id.text_view_description);
         rvTrailers = findViewById(R.id.recycler_view_trailers);
         rvReviews = findViewById(R.id.recycler_view_reviews);
+        imageViewStar = findViewById(R.id.image_view_star);
     }
 
     public static Intent newIntent(Context context, Movie movie) {

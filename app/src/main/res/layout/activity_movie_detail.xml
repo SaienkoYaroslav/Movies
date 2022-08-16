@@ -19,6 +19,16 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
 
+        <ImageView
+            android:id="@+id/image_view_star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:layout_constraintBottom_toBottomOf="@id/image_view_detail_poster"
+            app:layout_constraintEnd_toEndOf="@id/image_view_detail_poster"
+            app:layout_constraintTop_toBottomOf="@id/image_view_detail_poster"
+            tools:srcCompat="@android:drawable/btn_star_big_on" />
+
         <TextView
             android:id="@+id/text_view_title"
             android:layout_width="match_parent"
@@ -34,8 +44,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:textSize="16sp"
             android:textColor="@android:color/holo_orange_light"
+            android:textSize="16sp"
             app:layout_constraintTop_toBottomOf="@+id/text_view_title"
             tools:text="2002" />
 
@@ -50,19 +60,19 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_trailers"
-            android:nestedScrollingEnabled="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
             app:layout_constraintTop_toBottomOf="@id/text_view_description"
-            tools:listitem="@layout/trailer_item"/>
+            tools:listitem="@layout/trailer_item" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_reviews"
-            android:nestedScrollingEnabled="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
             app:layout_constraintTop_toBottomOf="@id/recycler_view_trailers"
-            tools:listitem="@layout/item_review"/>
+            tools:listitem="@layout/item_review" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
