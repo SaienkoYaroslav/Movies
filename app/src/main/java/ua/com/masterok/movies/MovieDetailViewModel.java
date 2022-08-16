@@ -21,11 +21,16 @@ public class MovieDetailViewModel extends AndroidViewModel {
 
     private static final String TAG = "MovieDetailViewModel";
     private final MutableLiveData<List<Trailers>> listTrailersMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<Review>> listReviewsMutableLiveData = new MutableLiveData<>();
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
 
     public LiveData<List<Trailers>> getListTrailersMutableLiveData() {
         return listTrailersMutableLiveData;
+    }
+
+    public MutableLiveData<List<Review>> getListReviewsMutableLiveData() {
+        return listReviewsMutableLiveData;
     }
 
     public MovieDetailViewModel(@NonNull Application application) {
@@ -46,6 +51,24 @@ public class MovieDetailViewModel extends AndroidViewModel {
                     @Override
                     public void accept(List<Trailers> trailers) throws Throwable {
                         listTrailersMutableLiveData.setValue(trailers);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Throwable {
+                        Log.d(TAG, throwable.toString());
+                    }
+                });
+        compositeDisposable.add(disposable);
+    }
+
+    public void loadReviews(int id) {
+        Disposable disposable = ApiFactory.apiService.loadReviews(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ReviewResponseFromServer>() {
+                    @Override
+                    public void accept(ReviewResponseFromServer reviewResponseFromServer) throws Throwable {
+                        listReviewsMutableLiveData.setValue(reviewResponseFromServer.getReview());
                     }
                 }, new Consumer<Throwable>() {
                     @Override

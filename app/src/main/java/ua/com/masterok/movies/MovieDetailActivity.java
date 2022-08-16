@@ -22,10 +22,11 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private ImageView imageViewPoster;
     private TextView tvTitle, tvYear, tvDescription;
-    private RecyclerView rvTrailers;
+    private RecyclerView rvTrailers, rvReviews;
 
     private MovieDetailViewModel movieDetailViewModel;
     private TrailersAdapter trailersAdapter;
+    private ReviewAdapter reviewAdapter;
 
     private static final String EXTRA_MOVIE = "movie";
 
@@ -56,6 +57,11 @@ public class MovieDetailActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        reviewAdapter = new ReviewAdapter();
+        rvReviews.setAdapter(reviewAdapter);
+        rvReviews.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
     }
 
     private void viewModel() {
@@ -65,6 +71,13 @@ public class MovieDetailActivity extends AppCompatActivity {
             @Override
             public void onChanged(List<Trailers> trailers) {
                 trailersAdapter.setTrailers(trailers);
+            }
+        });
+        movieDetailViewModel.loadReviews(id);
+        movieDetailViewModel.getListReviewsMutableLiveData().observe(this, new Observer<List<Review>>() {
+            @Override
+            public void onChanged(List<Review> reviews) {
+                reviewAdapter.setReviews(reviews);
             }
         });
     }
@@ -87,6 +100,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         tvYear = findViewById(R.id.text_view_year);
         tvDescription = findViewById(R.id.text_view_description);
         rvTrailers = findViewById(R.id.recycler_view_trailers);
+        rvReviews = findViewById(R.id.recycler_view_reviews);
     }
 
     public static Intent newIntent(Context context, Movie movie) {
